@@ -12,6 +12,9 @@ Plugin to automatically change the paths and links in the database of your site 
 
 == Description ==
 
+![How to migrate](https://plugins.svn.wordpress.org/hiweb-migration-simple/assets/animation-1.gif "how to migrate")
+[youtube http://www.youtube.com/watch?v=gOfXiH4xiPs]
+
 = English =
 Plugin to automatically change the paths and links in the database of your site on wordpress. Just migrate files and the site database to a new hosting.
 
