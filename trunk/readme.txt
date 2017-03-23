@@ -3,7 +3,7 @@ Contributors: Den Media
 Donate link:
 Tags: hosting, migrate, migration, server, domain, change, domain change, domain rename, site migration, site migrate, move, moving, admin site migration, free plugin, change post url, change page url, change images url, change image url, automatic url change, automatic url rename, automatic domain change, automatic domain rename, blog migrate, blog, free, free plugin, free plugins, pages url change, automatic pages move, domain move, blog move, site move, pages move, redirect to domain. redirect to url, simple domain migrate, simple domain change, simple domain rename
 Requires at least: 4.0
-Tested up to: 4.4
+Tested up to: 4.7.3
 Stable tag: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -47,6 +47,9 @@ This section describes how to install the plugin and get it working.
 
 
 == Changelog ==
+
+= 1.3.0.0 =
+Redesigned the algorithm for changing url in the database
 
 = 1.2.0.0 =
 Add FORCE RE-MIGRATE BUTTON in tools→options page...
