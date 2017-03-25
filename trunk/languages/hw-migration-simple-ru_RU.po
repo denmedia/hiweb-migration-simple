@@ -1,0 +1,103 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: hiWeb Migration Simple\n"
+"POT-Creation-Date: 2017-03-25 13:50+0300\n"
+"PO-Revision-Date: 2017-03-25 13:51+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.8\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: hiweb-migration-simple.php\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: inc/class.php:239
+msgid "Migration Panel"
+msgstr "Панель Миграции"
+
+#: template/options.php:3
+msgid "Site ready to mirgate..."
+msgstr "Сайт готов к переезду"
+
+#: template/options.php:5
+msgid ""
+"Download site & MySQL dump files via FTP or Client Panel by you'r hosting."
+msgstr ""
+"Скачайте файлы сайта и MySQL дампа, используя FTP или Панель Управления "
+"своего хостинга"
+
+#: template/options.php:6
+msgid "Upload this files on you'r new server."
+msgstr "Загрузите эти файлы на новый хостинг"
+
+#: template/options.php:7
+msgid ""
+"Connect site to new MySQL server, change connect data in wp-config.php file"
+msgstr ""
+"Подсоедините сайт к новой MySQL серверу, изменив данные в файле wp-config.php"
+
+#: template/options.php:8
+msgid ""
+"Go to new home page. Now you see message: \"hiWeb Migrate Site Process\". "
+"This message indicates the beginning of a process to automatically replace "
+"the old ways to the new database. Wait until the end, it should not take "
+"more than few easy\n"
+"\t\t\tseconds."
+msgstr ""
+"Откройте главную страницу. Вы увидите сообщение \"hiWeb Migration Site "
+"Process\". Это сообщение означает начало перезаписи старых путей в новой "
+"базе данных. Подождите окончания этого процесса, которое продлиться "
+"несколько секунд."
+
+#: template/options.php:11
+msgid "Done. Enjoy ;)"
+msgstr "Все. Приятного аппетита ;)"
+
+#: template/options.php:18
+msgid ""
+"This option is useful if the domain has changed, but the hosting site and "
+"the folder is not changed"
+msgstr ""
+
+#: template/options.php:21
+msgid "RE-MIGRATE to New Domain"
+msgstr "РЕ-МИГРАЦИЯ на Новый Домен"
+
+#: template/options.php:24
+msgid ""
+"Enter new domain (or stay them clear) and click this button to force a re-"
+"migrate procedure to new domain.<br>\n"
+"\t\tDon't forget about <b>http://</b> prefix."
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "hiWeb Migration Simple"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://hiweb.moscow/migration-simple"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Plugin to automatically change the paths and links in the database of your "
+"site on wordpress. Just migrate files and the site database to a new hosting."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Den Media"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://hiweb.moscow"
+msgstr ""

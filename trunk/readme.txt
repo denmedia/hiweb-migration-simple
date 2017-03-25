@@ -48,6 +48,9 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 1.4.0.0 =
+Add Re-Migrate Tool, Redesigned the algorithm for changing url in the database
+
 = 1.3.0.0 =
 Redesigned the algorithm for changing url in the database
 
