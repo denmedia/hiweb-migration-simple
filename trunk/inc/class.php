@@ -243,7 +243,6 @@
 
 			public function init(){
 				$B = load_plugin_textdomain( 'hw-migration-simple', false, HW_MIGRATION_SIMPLE_DIR . '/languages' );
-				hiweb()->console( HW_MIGRATION_SIMPLE_DIR . '/languages' );//todo-
 			}
 
 
