@@ -37,7 +37,7 @@ Plugin to automatically change the paths and links in the database of your site 
 
 This section describes how to install the plugin and get it working.
 
-1. Upload folder `hiweb-core` to the `/wp-content/plugins/` directory
+1. Upload folder `hiweb-migration-simple` to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'hiWeb Core' menu in WordPress
 
 
