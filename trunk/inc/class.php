@@ -23,7 +23,7 @@
 				if( trim( get_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', '' ) ) == '' ){
 					update_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', $this->get_base_dir() );
 				} elseif( $this->get_base_dir_change() ) {
-					add_action( 'init', '_hw_migration_simple_doSiteMigrate' );
+					add_action( 'init', array(hiweb_migration_simple(), 'do_site_migrate') );
 				}
 			}
 
@@ -161,9 +161,9 @@
 				foreach( $wpdb->tables() as $table ){
 					$columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $table );
 					foreach( $columns as $column ){
-						$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrl','$newUrl')";
-						$wpdb->query( $query );
 						$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrlEncode','$newUrlEncode')";
+						$wpdb->query( $query );
+						$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrl','$newUrl')";
 						$wpdb->query( $query );
 						if( !$compareUrls ){
 							$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrlTrim','$newUrlTrim')";
