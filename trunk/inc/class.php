@@ -101,7 +101,6 @@
 			 */
 			public function get_base_dir_change(){
 				$oldpath = get_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', $this->get_base_dir() );
-
 				return $oldpath != $this->get_base_dir();
 			}
 
