@@ -17,14 +17,12 @@
 
 
 			/**
-			 *
+			 * @param $string
+			 * @return bool
 			 */
-			public function init(){
-				if( trim( get_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', '' ) ) == '' ){
-					update_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', $this->get_base_dir() );
-				} elseif( $this->get_base_dir_change() ) {
-					add_action( 'init', array(hiweb_migration_simple(), 'do_site_migrate') );
-				}
+			public function is_serialize( $string ){
+				$data = @unserialize( $string );
+				return ( $data !== false );
 			}
 
 
@@ -119,22 +117,39 @@
 			/**
 			 * @param string $newUrl
 			 * @param string $oldUrl
+			 * @return array
 			 */
 			public function do_site_migrate( $newUrl = '', $oldUrl = '' ){
 				$oldBaseDir = get_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir' );
 				$baseDir = $this->get_base_dir();
 				update_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', $baseDir );
+				update_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir_old', $oldBaseDir );
 				if( trim( $oldUrl ) == '' )
 					$oldUrl = get_option( 'siteurl' );
 				if( trim( $newUrl ) == '' )
 					$newUrl = $this->get_base_url();
 				///
-				$this->do_DB_change( $oldUrl, $newUrl, $oldBaseDir, $baseDir );
+				$R = $this->do_DB_change( $oldUrl, $newUrl, $oldBaseDir, $baseDir );
 				///
 				$this->do_rewrite_rules( $baseDir );
 				///
-				include_once HW_MIGRATION_SIMPLE_DIR . '/template/frontend.php';
-				die;
+				return $R;
+			}
+
+
+			/**
+			 * @param $columns
+			 * @return bool|string
+			 */
+			private function get_columns_pri_key( $columns ){
+				if( !is_array( $columns ) )
+					return false;
+				foreach( $columns as $column ){
+					if( $column->Key == 'PRI' ){
+						return $column->Field;
+					}
+				}
+				return false;
 			}
 
 
@@ -143,35 +158,52 @@
 			 * @param      $newUrl
 			 * @param null $oldBaseDir
 			 * @param null $newBaseDir
+			 * @return array
 			 */
 			public function do_DB_change( $oldUrl, $newUrl, $oldBaseDir = null, $newBaseDir = null ){
+				/** @var $wpdb wpdb */
 				global $wpdb;
 				///
-				$oldUrl = rtrim( $oldUrl, '/\\' );
-				$newUrl = rtrim( $newUrl, '/\\' );
-				$oldUrlEncode = urlencode( rtrim( $oldUrl, '/\\' ) );
-				$newUrlEncode = urlencode( rtrim( $newUrl, '/\\' ) );
-				$oldUrlTrim = preg_replace( '/^http(s)?:\/\//', '', $oldUrl );
-				$newUrlTrim = preg_replace( '/^http(s)?:\/\//', '', $newUrl );
-				$compareUrls = ( strpos( $oldUrlTrim, $newUrlTrim ) !== false || strpos( $newUrlTrim, $oldUrlTrim ) );
+				$replacePairs = array(
+					rtrim( $oldBaseDir, '/\\' ) => rtrim( $newBaseDir, '/\\' ),
+					rtrim( $oldUrl, '/\\' ) => rtrim( $newUrl, '/\\' ),
+					urlencode( rtrim( $oldUrl, '/\\' ) ) => urlencode( rtrim( $newUrl, '/\\' ) )
+				);
 				///
-				$oldBaseDir = rtrim( $oldBaseDir, '/\\' );
-				$newBaseDir = rtrim( $newBaseDir, '/\\' );
+				$R = array();
 				foreach( $wpdb->tables() as $table ){
 					$columns = $wpdb->get_results( 'SHOW COLUMNS FROM ' . $table );
-					foreach( $columns as $column ){
-						$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrlEncode','$newUrlEncode')";
-						$wpdb->query( $query );
-						$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrl','$newUrl')";
-						$wpdb->query( $query );
-						if( !$compareUrls ){
-							$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldUrlTrim','$newUrlTrim')";
-							$wpdb->query( $query );
+					$pri = $this->get_columns_pri_key( $columns );
+					if( is_string( $pri ) ){
+						foreach( $columns as $column ){
+							foreach( $replacePairs as $from => $to ){
+								if( $from != $to ){
+									$query = 'SELECT * FROM ' . $table . ' WHERE `' . $column->Field . '` LIKE \'%' . $from . '%\'';
+									$result = $wpdb->get_results( $query );
+									if( is_array( $result ) && count( $result ) > 0 ){
+										foreach( $result as $row ){
+											$row = (array)$row;
+											if( isset( $row[ $column->Field ] ) ){
+												$content_from = $row[ $column->Field ];
+												if( $this->is_serialize( $content_from ) && strpos( $content_from, $from ) !== false ){
+													$json_from = json_encode( unserialize( $content_from ) );
+													$json_to = str_replace( str_replace( '/', '\/', $from ), str_replace( '/', '\/', $to ), $json_from );
+													$content_to = serialize( json_decode( $json_to, true ) );
+													$query = $wpdb->prepare( 'UPDATE ' . $table . ' SET ' . $column->Field . '="%s" WHERE ' . $pri . '="%d"', $content_to, $row[ $pri ] );
+												} else {
+													$content_to = str_replace( $from, $to, $content_from );
+													$query = $wpdb->prepare( 'UPDATE ' . $table . ' SET ' . $column->Field . '="%s" WHERE ' . $pri . '="%d"', $content_to, $row[ $pri ] );
+												}
+												$R[ $query ] = $wpdb->query( $query );
+											}
+										}
+									}
+								}
+							}
 						}
-						$query = "UPDATE " . $table . " SET $column->Field = REPLACE($column->Field, '$oldBaseDir','$newBaseDir')";
-						$wpdb->query( $query );
 					}
 				}
+				return $R;
 			}
 
 
@@ -242,6 +274,13 @@
 
 			public function init(){
 				$B = load_plugin_textdomain( 'hw-migration-simple', false, HW_MIGRATION_SIMPLE_DIR . '/languages' );
+				if( trim( get_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', '' ) ) == '' ){
+					update_option( HW_MIGRATION_SIMPLE_PREFIX . '_basedir', hiweb_migration_simple()->get_base_dir() );
+				} elseif( hiweb_migration_simple()->get_base_dir_change() ) {
+					include HW_MIGRATION_SIMPLE_DIR . '/template/frontend.php';
+					hiweb_migration_simple()->do_site_migrate();
+					die;
+				}
 			}
 
 
@@ -261,8 +300,12 @@
 						if( trim( $new_domain ) == '' ){
 							exit( 'Domain is not set...' );
 						} else {
-							hiweb_migration_simple()->do_site_migrate( $new_domain, $old_domain );
-							include HW_MIGRATION_SIMPLE_DIR . '/template/force-re-migrate-done.php';
+							$R = hiweb_migration_simple()->do_site_migrate( $new_domain, $old_domain );
+							if( is_array( $R ) ){
+								include HW_MIGRATION_SIMPLE_DIR . '/template/force-re-migrate-done.php';
+							} else {
+								include HW_MIGRATION_SIMPLE_DIR . '/template/force-re-migrate-error.php';
+							}
 						}
 					} else {
 						if( trim( $new_domain ) == '' ){
@@ -273,7 +316,7 @@
 							$old_domain = get_option( 'siteurl' );
 							$_POST['old_domain'] = $old_domain;
 						}
-						include HW_MIGRATION_SIMPLE_DIR . '/template/force-re-migrate.php';
+						include HW_MIGRATION_SIMPLE_DIR . '/template/force-re-migrate-confirm.php';
 					}
 				} else {
 					include HW_MIGRATION_SIMPLE_DIR . '/template/options.php';

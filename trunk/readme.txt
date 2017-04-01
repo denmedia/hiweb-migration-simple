@@ -48,6 +48,9 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 1.5.0.0 =
+ReCode replace Old urls to New urls, include serialize data!
+
 = 1.4.1.0 =
 FIX AUTO RE MIGRATE
 

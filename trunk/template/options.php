@@ -18,7 +18,7 @@
 	<p><?php _e('This option is useful if the domain has changed, but the hosting site and the folder is not changed','hw-migration-simple') ?></p>
 	<p>
 		<strong>From Old Domain... (select one or more)</strong><br/>
-		<select name="old_domain" multiple size="8">
+		<select name="old_domain" multiple="multiple" size="8">
 			<option value="<?php echo get_option( 'siteurl' ) ?>" selected><?php echo get_option( 'siteurl' ).' (current URL)' ?></option>
 		<?php
 			$urls = hiweb_migration_simple()->get_DB_urls();
