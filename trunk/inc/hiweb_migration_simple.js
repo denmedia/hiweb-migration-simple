@@ -7,7 +7,7 @@ jQuery(document).ready(function($){
                 if(response.success) {
                     console.info('reload...');
                     $('[data-button-reload]').show('slow');
-                    //location.reload();
+                    location.reload();
                 } else {
                     alert(response.data);
                 }

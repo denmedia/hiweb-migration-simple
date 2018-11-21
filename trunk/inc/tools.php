@@ -114,6 +114,15 @@
 
 
 		/**
+		 * Get current wp site url
+		 * @return string
+		 */
+		static function get_wp_old_base_url(){
+			return get_option( 'siteurl' );
+		}
+
+
+		/**
 		 * @return string
 		 */
 		static function get_old_base_dir(){

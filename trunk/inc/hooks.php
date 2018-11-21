@@ -64,7 +64,7 @@
 						$_POST['new_domain'] = $new_domain;
 					}
 					if( trim( $old_domain ) == '' ){
-						$old_domain = get_option( 'siteurl' );
+						$old_domain = tools::get_wp_old_base_url();
 						$_POST['old_domain'] = $old_domain;
 					}
 					include HW_MIGRATION_SIMPLE_DIR . '/template/force-re-migrate-confirm.php';
